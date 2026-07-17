@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DOPAMINA</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">D</div>
+          <div>
+            <h1>DOPAMINA</h1>
+            <p>Sistema Inteligente de Control de Producción</p>
+          </div>
+        </div>
+
+        <nav class="nav-links">
+          <button class="nav-btn active" data-section="dashboard">Dashboard</button>
+          <button class="nav-btn" data-section="history">Historial</button>
+          <button class="nav-btn" data-section="stats">Estadísticas</button>
+          <button class="nav-btn" data-section="charts">Gráficos</button>
+          <button class="nav-btn" data-section="exports">Exportaciones</button>
+          <button class="nav-btn" data-section="settings">Configuración</button>
+        </nav>
+
+        <div class="sidebar-card">
+          <h3>Estado</h3>
+          <p id="statusText">Listo para registrar producción.</p>
+        </div>
+      </aside>
+
+      <main class="content">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Panel principal</p>
+            <h2 id="pageTitle">Dashboard</h2>
+          </div>
+          <div class="topbar-actions">
+            <label class="theme-switch">
+              <input type="checkbox" id="themeToggle" />
+              <span>Modo oscuro</span>
+            </label>
+          </div>
+        </header>
+
+        <section id="dashboardSection" class="section active-section">
+          <div class="card hero-card">
+            <div class="hero-grid">
+              <div>
+                <p class="eyebrow">Fecha actual</p>
+                <h3 id="currentDateLabel">--</h3>
+                <p class="muted">Registra y actualiza la producción de los turnos Día y Noche.</p>
+              </div>
+              <div class="hero-form">
+                <label>
+                  Fecha
+                  <input type="date" id="dashboardDate" />
+                </label>
+                <label>
+                  Producción turno Día
+                  <input type="number" id="dashboardDay" min="0" step="0.01" placeholder="0" />
+                </label>
+                <label>
+                  Producción turno Noche
+                  <input type="number" id="dashboardNight" min="0" step="0.01" placeholder="0" />
+                </label>
+                <label>
+                  Observaciones
+                  <textarea id="dashboardObservations" rows="3" placeholder="Agregar observaciones"></textarea>
+                </label>
+                <div class="inline-stats">
+                  <div>
+                    <span>Total diario</span>
+                    <strong id="dashboardTotal">0</strong>
+                  </div>
+                  <div>
+                    <span>Acumulado del mes</span>
+                    <strong id="dashboardMonthTotal">0</strong>
+                  </div>
+                </div>
+                <div class="form-actions">
+                  <button id="saveRecordBtn" class="primary-btn">Guardar registro</button>
+                  <button id="cancelEditBtn" class="secondary-btn">Cancelar</button>
+                </div>
+                <input type="hidden" id="editingRecordId" />
+              </div>
+            </div>
+          </div>
+
+          <div class="summary-grid" id="summaryCards"></div>
+        </section>
+
+        <section id="historySection" class="section">
+          <div class="card">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Historial</p>
+                <h3>Registro histórico</h3>
+              </div>
+            </div>
+            <div class="filters">
+              <input type="search" id="historySearch" placeholder="Buscar por fecha u observación" />
+              <select id="historyMonth">
+                <option value="">Todos los meses</option>
+              </select>
+              <select id="historyYear">
+                <option value="">Todos los años</option>
+              </select>
+              <select id="historySort">
+                <option value="date-desc">Fecha (reciente)</option>
+                <option value="date-asc">Fecha (antigua)</option>
+                <option value="total-desc">Total (mayor)</option>
+                <option value="total-asc">Total (menor)</option>
+              </select>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Día</th>
+                    <th>Noche</th>
+                    <th>Total</th>
+                    <th>Observaciones</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="historyTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section id="statsSection" class="section">
+          <div class="card">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Estadísticas</p>
+                <h3>Resumen del desempeño</h3>
+              </div>
+            </div>
+            <div class="stats-grid" id="statsGrid"></div>
+          </div>
+        </section>
+
+        <section id="chartsSection" class="section">
+          <div class="card">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Gráficos</p>
+                <h3>Visualización de producción</h3>
+              </div>
+            </div>
+            <div class="charts-grid" id="chartsGrid"></div>
+          </div>
+        </section>
+
+        <section id="exportsSection" class="section">
+          <div class="card">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Exportaciones</p>
+                <h3>Descarga de reportes</h3>
+              </div>
+            </div>
+            <div class="export-grid">
+              <div class="export-panel">
+                <h4>Exportar un día</h4>
+                <input type="date" id="exportDayDate" />
+                <button class="primary-btn" id="exportDayBtn">Exportar Excel</button>
+                <button class="secondary-btn" id="exportDayCsvBtn">Exportar CSV</button>
+              </div>
+              <div class="export-panel">
+                <h4>Exportar un mes</h4>
+                <select id="exportMonth"></select>
+                <select id="exportYear"></select>
+                <button class="primary-btn" id="exportMonthBtn">Exportar Excel</button>
+                <button class="secondary-btn" id="exportMonthCsvBtn">Exportar CSV</button>
+              </div>
+              <div class="export-panel">
+                <h4>Exportar un año</h4>
+                <select id="exportYearOnly"></select>
+                <button class="primary-btn" id="exportYearBtn">Exportar Excel</button>
+                <button class="secondary-btn" id="exportYearCsvBtn">Exportar CSV</button>
+              </div>
+              <div class="export-panel">
+                <h4>Exportar un rango</h4>
+                <input type="date" id="exportStartDate" />
+                <input type="date" id="exportEndDate" />
+                <button class="primary-btn" id="exportRangeBtn">Exportar Excel</button>
+                <button class="secondary-btn" id="exportRangeCsvBtn">Exportar CSV</button>
+                <button class="secondary-btn" id="exportPdfBtn">Exportar PDF</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="settingsSection" class="section">
+          <div class="card">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Configuración</p>
+                <h3>Personaliza la operación</h3>
+              </div>
+            </div>
+            <div class="settings-grid">
+              <div class="settings-panel">
+                <label>
+                  Nombre de la empresa
+                  <input type="text" id="companyName" />
+                </label>
+                <label>
+                  Meta diaria
+                  <input type="number" id="dailyTarget" min="0" step="0.01" />
+                </label>
+                <label>
+                  Meta mensual
+                  <input type="number" id="monthlyTarget" min="0" step="0.01" />
+                </label>
+                <label>
+                  Color principal
+                  <input type="color" id="primaryColor" />
+                </label>
+                <label>
+                  Color secundario
+                  <input type="color" id="secondaryColor" />
+                </label>
+                <button class="primary-btn" id="saveSettingsBtn">Guardar configuración</button>
+              </div>
+              <div class="settings-panel">
+                <label>
+                  Logo
+                  <input type="file" id="logoUpload" accept="image/*" />
+                </label>
+                <div id="logoPreview" class="logo-preview"></div>
+                <button class="secondary-btn" id="backupBtn">Respaldar base de datos</button>
+                <input type="file" id="restoreInput" accept="application/json" />
+                <button class="secondary-btn" id="restoreBtn">Restaurar respaldo</button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
